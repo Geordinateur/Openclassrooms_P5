@@ -6,7 +6,7 @@ const cameras = [
     ],
     "_id": "5be1ed3f1c9d44000030b061",
     "name": "Zurss 50S",
-    "price": 49900,
+    "price": 59970,
     "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "imageUrl": "vcam_1.jpg"
   },
