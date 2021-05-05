@@ -5,3 +5,8 @@
 .img-element { 
 	width: 100px;
 }
+
+.img-description {
+	width: 100%;
+	max-width: 600px;
+}
