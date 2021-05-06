@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
@@ -20,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/Geordinateur/Openclassrooms_P5/issues"
   },
-  "homepage": "https://github.com/Geordinateur/Openclassrooms_P5#readme"
+  "homepage": "https://github.com/Geordinateur/Openclassrooms_P5#readme",
+  "devDependencies": {
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.6.0"
+  }
 }
