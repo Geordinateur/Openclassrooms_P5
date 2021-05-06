@@ -10,3 +10,7 @@
 	width: 100%;
 	max-width: 600px;
 }
+
+.listing-hover:hover { 
+	background-color: #f8f9fa;
+}

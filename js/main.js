@@ -84,9 +84,8 @@ function centsToEuros(number) {
   return euros.toFixed(2) + " euros";
 }
 
-function createElementListing(name, id, img, price) {
   const divElement = document.createElement("a");
-  divElement.setAttribute("class", "clearfix d-block mb-3");
+  divElement.setAttribute("class", "clearfix d-block mb-3 hover-listing");
   divElement.setAttribute(
     "href",
     "index.html?content=" + content + "&id=" + id
