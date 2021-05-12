@@ -4,6 +4,11 @@ let content = url.searchParams.get("content");
 let id = url.searchParams.get("id");
 let action = url.searchParams.get("action");
 
+
+
+
+if(localStorage.length > 0) { document.getElementById("link-my-basket").textContent += " (" + localStorage.length + ")";}
+
 if (content) {
 	titlePage = content.charAt(0).toUpperCase() + content.substring(1).toLowerCase();
 	if(id) {
@@ -14,12 +19,19 @@ if (content) {
 		document.getElementsByTagName("h2")[0].textContent += titlePage;
 		getContent(content);
 	}
-//} else if(action === "basket") {
+	//} else if(action === "basket") {
 } else if(action) {
+	document.getElementsByTagName("h2")[0].textContent = "Mon panier";
 	console.log("ou je suis");
 	console.log(action);
-}
+	console.log(localStorage);
+	var cat = localStorage.getItem('myCat');
+	console.log(localStorage.length);
 
+for (let i in myBasket()) {
+	getArticle(myBasket()[i][0], myBasket()[i][1]);
+}
+}
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -66,7 +78,7 @@ function getArticle(content, id) {
 			} else { 
 				optionArticle = "erreur";
 			}
-			document.getElementsByTagName("h2")[0].innerHTML += " >> " + value[id].name;
+			if(url.searchParams.get("id")) { document.getElementsByTagName("h2")[0].innerHTML += " >> " + value[id].name; }
 			createElementArticle(
 				value[id].name,
 				id,
@@ -127,9 +139,15 @@ function createElementArticle(name, id, img, price, description, option) {
 	div.appendChild(descriptionArticle);
 	div.appendChild(imgArticle);
 
+	if(content && id) {
+		elementArticleAdd();
+	}
+}
+
+function elementArticleAdd() {
 	//creation du form
 	const formToBuy = document.createElement("form");
-	formToBuy.setAttribute("action", "index.html?action=heeeeey");
+	formToBuy.setAttribute("action", "index.html?action=add-to-basket&what=" + content + "&id=" + id);
 	formToBuy.setAttribute("method", "post");
 	formToBuy.setAttribute("class", "form-group");
 	formToBuy.setAttribute("id", "form-to-buy");
@@ -139,6 +157,12 @@ function createElementArticle(name, id, img, price, description, option) {
 	btnBuy.setAttribute("class", "btn btn-primary m-1")
 	btnBuy.setAttribute("type", "submit")
 	btnBuy.textContent = "Ajouter au panier"
+	btnBuy.addEventListener("click", function(e) {
+		localStorage.setItem(localStorage.length, content + "-" + id);
+		e.preventDefault();
+		alertAddToBasket();
+		//window.alert("Article correctement ajouter au panier!");
+	});
 
 	//creation du selecteur d'option
 	const sltOption = document.createElement("select");
@@ -158,4 +182,31 @@ function selectOption(array) {
 		document.getElementById("option-article").appendChild(opt);
 		console.log(option);
 	}
+}
+
+function alertAddToBasket() {
+	const mainPage = document.getElementsByTagName("main")[0];
+	const divAlertAdd  = document.createElement("div");
+	divAlertAdd.setAttribute("class", "alertAddToBasket");
+	//	divAlertAdd.textContent = "Article correctemenet ajouter au panier!";
+	divAlertAdd
+		.textContent = "Article correctement ajouter au panier!"
+	const btnClose = document.createElement('button');
+	btnClose.setAttribute("class", "btn btn-primary m-1")
+	btnClose.setAttribute("type", "submit")
+	btnClose.textContent = "Fermer"
+	btnClose.addEventListener("click", function(e) {
+		divAlertAdd.remove();
+		e.preventDefault();
+	})
+	mainPage.appendChild(divAlertAdd);
+	divAlertAdd.appendChild(btnClose);
+}
+
+function myBasket() {
+let myBasket = []
+for (let i = 0; i < localStorage.length; i++) {
+myBasket.push(localStorage[i].split("-"));
+}
+return myBasket;
 }
