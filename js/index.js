@@ -3,35 +3,47 @@ let url = new URL(str);
 let content = url.searchParams.get("content");
 let id = url.searchParams.get("id");
 let action = url.searchParams.get("action");
+let total = 0;
 
 
-
-
-if(localStorage.length > 0) { document.getElementById("link-my-basket").textContent += " (" + localStorage.length + ")";}
+if(localStorage.length > 0) { 
+	// compte et affiche le nombre d'article dans le panier si il y en a...
+	document.getElementById("link-my-basket").textContent += " (" + localStorage.length + ")";
+}
 
 if (content) {
 	titlePage = content.charAt(0).toUpperCase() + content.substring(1).toLowerCase();
 	if(id) {
+		// affiche un article quand le parametre ID est renseigner et ajoute aussi le titre de la page!
 		document.getElementsByTagName("h2")[0].innerHTML +=
 			'<a href="index.html?content=' + content + '">' + titlePage + "</a>";
 		getArticle(content, id);
 	} else {
+		// affiche tous les articles de la categorie si l'ID n'est pas renseigner!
 		document.getElementsByTagName("h2")[0].textContent += titlePage;
 		getContent(content);
 	}
-	//} else if(action === "basket") {
 } else if(action) {
-	document.getElementsByTagName("h2")[0].textContent = "Mon panier";
-	console.log("ou je suis");
-	console.log(action);
-	console.log(localStorage);
-	var cat = localStorage.getItem('myCat');
-	console.log(localStorage.length);
+	if(action === 'basket'){
+		// affiche le contenu du panier si le parametre action est renseigner
+		document.getElementsByTagName("h2")[0].textContent = "Mon panier";
+		for (let i in myBasket()) {
+			// parcours le contenu du localStorage a l'aide de la function myBasket()
+			getArticle(myBasket()[i][0], myBasket()[i][1]);
+//			getPrice(myBasket()[i][0], myBasket()[i][1]);
+		}
+		//purchase();
+		if(localStorage.length > 0) {
+			document.getElementsByTagName("aside")[0].appendChild(btn("Supprimer mon panier"));
+		} else {
+			const nullBasket = document.createElement("h2");
+			nullBasket.textContent = 'Votre panier est vide';
+			document.getElementsByTagName("main")[0].appendChild(nullBasket);
+		}
+	}
+}
 
-for (let i in myBasket()) {
-	getArticle(myBasket()[i][0], myBasket()[i][1]);
-}
-}
+console.log('localStorage : ', localStorage);
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -94,6 +106,33 @@ function getArticle(content, id) {
 		});
 }
 
+function getTotal(content, id) {
+	fetch("http://localhost:3000/api/" + content)
+		.then(function(response) {
+			if(response.ok) {
+				return response.json();
+			}
+		})
+		.then(function(value) {
+			total += value[id].price;
+			return new Promise (centsToEuros(total));
+		})
+		.catch(function(err) {
+			//erreur
+		});
+}
+
+
+
+async function asyncCall() {
+  const result = await getTotal(myBasket()[0][0], myBasket()[0][1]);
+	console.log('result: ' + result);
+}
+
+asyncCall();
+
+
+
 function centsToEuros(number) {
 	euros = number / 100;
 	return euros.toFixed(2) + " euros";
@@ -142,37 +181,52 @@ function createElementArticle(name, id, img, price, description, option) {
 	if(content && id) {
 		elementArticleAdd();
 	}
+};
+
+function btn(title) {
+	//creation du btn
+	const btn = document.createElement('button');
+	btn.setAttribute("class", "btn btn-primary m-1")
+	btn.setAttribute("type", "submit")
+	btn.textContent = title;
+	switch (title) {
+		case 'Ajouter au panier':
+			btn.addEventListener("click", function(e) {
+				addToBasket();
+				e.preventDefault();
+			});
+			break;
+		case 'Supprimer mon panier':
+			// supprime le panier et redirige vers la page du panier
+			btn.setAttribute("class", "btn btn-danger m-1")
+			btn.addEventListener("click", function(e) {
+				localStorage.clear();
+				document.location.href="index.html?action=basket";
+				e.preventDefault();
+			});
+			break;
+		case 'Fermer la fenetre':
+			btn.setAttribute("class", "btn btn-success m-1")
+			btn.addEventListener("click", function(e) {
+				document.getElementById('alertAddToBasket').remove();
+				e.preventDefault();
+			});
+			break;
+		default:
+			console.log('Unknown account type!');
+	}
+	return btn;
 }
 
 function elementArticleAdd() {
-	//creation du form
-	const formToBuy = document.createElement("form");
-	formToBuy.setAttribute("action", "index.html?action=add-to-basket&what=" + content + "&id=" + id);
-	formToBuy.setAttribute("method", "post");
-	formToBuy.setAttribute("class", "form-group");
-	formToBuy.setAttribute("id", "form-to-buy");
-
-	//creation du btn
-	const btnBuy = document.createElement('button');
-	btnBuy.setAttribute("class", "btn btn-primary m-1")
-	btnBuy.setAttribute("type", "submit")
-	btnBuy.textContent = "Ajouter au panier"
-	btnBuy.addEventListener("click", function(e) {
-		localStorage.setItem(localStorage.length, content + "-" + id);
-		e.preventDefault();
-		alertAddToBasket();
-		//window.alert("Article correctement ajouter au panier!");
-	});
-
 	//creation du selecteur d'option
 	const sltOption = document.createElement("select");
 	sltOption.setAttribute("class", "form-select m-1");
 	sltOption.setAttribute("aria-label", "Default select example");
 	sltOption.setAttribute("id", "option-article");
 
-	document.getElementsByTagName("aside")[0].appendChild(formToBuy);
-	document.getElementById("form-to-buy").appendChild(sltOption);
-	document.getElementById("form-to-buy").appendChild(btnBuy);
+	document.getElementsByTagName("aside")[0].appendChild(sltOption);
+	document.getElementsByTagName("aside")[0].appendChild(btn("Ajouter au panier"));
 }
 
 function selectOption(array) {
@@ -180,33 +234,27 @@ function selectOption(array) {
 		let opt = document.createElement("option");
 		opt.textContent = option;
 		document.getElementById("option-article").appendChild(opt);
-		console.log(option);
 	}
 }
 
-function alertAddToBasket() {
+function addToBasket() {
+	localStorage.setItem(localStorage.length, content + "-" + id);
 	const mainPage = document.getElementsByTagName("main")[0];
 	const divAlertAdd  = document.createElement("div");
-	divAlertAdd.setAttribute("class", "alertAddToBasket");
-	//	divAlertAdd.textContent = "Article correctemenet ajouter au panier!";
-	divAlertAdd
+	divAlertAdd.setAttribute("class", "alertAddToBasket p-3 alert-success");
+	divAlertAdd.setAttribute("id", "alertAddToBasket");
+	const pAlertAdd = document.createElement('p');
+	pAlertAdd
 		.textContent = "Article correctement ajouter au panier!"
-	const btnClose = document.createElement('button');
-	btnClose.setAttribute("class", "btn btn-primary m-1")
-	btnClose.setAttribute("type", "submit")
-	btnClose.textContent = "Fermer"
-	btnClose.addEventListener("click", function(e) {
-		divAlertAdd.remove();
-		e.preventDefault();
-	})
 	mainPage.appendChild(divAlertAdd);
-	divAlertAdd.appendChild(btnClose);
+	divAlertAdd.appendChild(pAlertAdd);
+	divAlertAdd.appendChild(btn("Fermer la fenetre"));
 }
 
 function myBasket() {
-let myBasket = []
-for (let i = 0; i < localStorage.length; i++) {
-myBasket.push(localStorage[i].split("-"));
-}
-return myBasket;
+	let myBasket = []
+	for (let i = 0; i < localStorage.length; i++) {
+		myBasket.push(localStorage[i].split("-"));
+	}
+	return myBasket;
 }
