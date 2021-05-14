@@ -30,20 +30,21 @@ if (content) {
 		for (let i in myBasket()) {
 			// parcours le contenu du localStorage a l'aide de la function myBasket()
 			getArticle(myBasket()[i][0], myBasket()[i][1]);
-//			getPrice(myBasket()[i][0], myBasket()[i][1]);
+			//getTotal(myBasket()[i][0], myBasket()[i][1]);
+			console.log('salut');
 		}
-		//purchase();
 		if(localStorage.length > 0) {
 			document.getElementsByTagName("aside")[0].appendChild(btn("Supprimer mon panier"));
+			document.getElementsByTagName("aside")[0].appendChild(btn("Passer commande!"));
 		} else {
 			const nullBasket = document.createElement("h2");
 			nullBasket.textContent = 'Votre panier est vide';
 			document.getElementsByTagName("main")[0].appendChild(nullBasket);
 		}
+	} else if(action === 'purchase') {
+		formToPurchase();
 	}
 }
-
-console.log('localStorage : ', localStorage);
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -106,7 +107,7 @@ function getArticle(content, id) {
 		});
 }
 
-function getTotal(content, id) {
+function getPrice(content, id) {
 	fetch("http://localhost:3000/api/" + content)
 		.then(function(response) {
 			if(response.ok) {
@@ -114,8 +115,7 @@ function getTotal(content, id) {
 			}
 		})
 		.then(function(value) {
-			total += value[id].price;
-			return new Promise (centsToEuros(total));
+			return centsToEuros(total += value[id].price);
 		})
 		.catch(function(err) {
 			//erreur
@@ -123,15 +123,51 @@ function getTotal(content, id) {
 }
 
 
+async function getTotal(content, id){
+	const result = await getPrice(content, id);
+	console.log('resultat: ' + result);
+}
+
+getTotal('teddies', 1);
+getTotal('teddies', 1);
+
+
+
+
+
+function resolveAfter2Seconds() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 2000);
+  });
+}
+
 
 async function asyncCall() {
-  const result = await getTotal(myBasket()[0][0], myBasket()[0][1]);
+  console.log('calling');
+  const result = await resolveAfter2Seconds();
+  console.log(result);
+  // expected output: "resolved"
+}
+
+
+
+
+
+
+
+
+console.log('toto: ' + total);
+
+/*
+async function asyncCall() {
+	const result = await getTotal(myBasket()[0][0], myBasket()[0][1]);
 	console.log('result: ' + result);
 }
 
 asyncCall();
-
-
+*/
 
 function centsToEuros(number) {
 	euros = number / 100;
@@ -209,6 +245,14 @@ function btn(title) {
 			btn.setAttribute("class", "btn btn-success m-1")
 			btn.addEventListener("click", function(e) {
 				document.getElementById('alertAddToBasket').remove();
+				document.getElementById('bodyAlert').remove();
+				e.preventDefault();
+			});
+			break;
+		case 'Passer commande!':
+			btn.setAttribute('class', 'btn btn-success m-1')
+			btn.addEventListener('click', function(e) {
+				document.location.href="index.html?action=purchase";
 				e.preventDefault();
 			});
 			break;
@@ -243,9 +287,13 @@ function addToBasket() {
 	const divAlertAdd  = document.createElement("div");
 	divAlertAdd.setAttribute("class", "alertAddToBasket p-3 alert-success");
 	divAlertAdd.setAttribute("id", "alertAddToBasket");
+	const bodyAlert = document.createElement('div');
+	bodyAlert.setAttribute('class', 'bodyFade');
+	bodyAlert.setAttribute('id', 'bodyAlert');
 	const pAlertAdd = document.createElement('p');
 	pAlertAdd
 		.textContent = "Article correctement ajouter au panier!"
+	mainPage.appendChild(bodyAlert);
 	mainPage.appendChild(divAlertAdd);
 	divAlertAdd.appendChild(pAlertAdd);
 	divAlertAdd.appendChild(btn("Fermer la fenetre"));
@@ -257,4 +305,69 @@ function myBasket() {
 		myBasket.push(localStorage[i].split("-"));
 	}
 	return myBasket;
+}
+
+function formToPurchase() {
+	const form = document.createElement('form');
+	const divForm = document.createElement('div');
+	divForm.setAttribute('class', 'form-group');
+	divForm.setAttribute('id', 'form-to-purchase');
+	divForm.setAttribute('method', 'POST');
+	const labelFirstName = document.createElement('label');
+	labelFirstName.setAttribute('for', 'idFirstName');
+	labelFirstName.textContent = 'First Name';
+	const inputFirstName = document.createElement('input');
+	inputFirstName.setAttribute('id', 'idFirstName');
+	inputFirstName.setAttribute('class', 'form-control');
+	inputFirstName.setAttribute('placeholder', 'Entrez votre prenom');
+	inputFirstName.setAttribute('type', 'text');
+	inputFirstName.setAttribute('required', '');
+	const labelLastName = document.createElement('label');
+	labelLastName.setAttribute('for', 'idLastName');
+	labelLastName.textContent = 'Last Name';
+	const inputLastName = document.createElement('input');
+	inputLastName.setAttribute('id', 'idLastName');
+	inputLastName.setAttribute('class', 'form-control');
+	inputLastName.setAttribute('placeholder', 'Entrez votre nom de famille');
+	inputLastName.setAttribute('type', 'text');
+	inputLastName.setAttribute('required', '');
+	const labelAddress = document.createElement('label');
+	labelAddress.setAttribute('for', 'idAddress');
+	labelAddress.textContent = 'Adresse';
+	const inputAddress = document.createElement('input');
+	inputAddress.setAttribute('id', 'idAddress');
+	inputAddress.setAttribute('class', 'form-control');
+	inputAddress.setAttribute('placeholder', 'Entrez votre adresse');
+	inputAddress.setAttribute('type', 'address');
+	inputAddress.setAttribute('required', '');
+	const labelCity = document.createElement('label');
+	labelCity.setAttribute('for', 'idCity');
+	labelCity.textContent = 'Ville';
+	const inputCity= document.createElement('input');
+	inputCity.setAttribute('id', 'idCity');
+	inputCity.setAttribute('class', 'form-control');
+	inputCity.setAttribute('placeholder', 'Entrez votre ville');
+	inputCity.setAttribute('type', 'address');
+	inputCity.setAttribute('required', '');
+	const labelEmail = document.createElement('label');
+	labelEmail.setAttribute('for', 'idEmail');
+	labelEmail.textContent = 'Courriel';
+	const inputEmail= document.createElement('input');
+	inputEmail.setAttribute('id', 'idEmail');
+	inputEmail.setAttribute('class', 'form-control');
+	inputEmail.setAttribute('placeholder', 'Entrez votre email');
+	inputEmail.setAttribute('type', 'email');
+	inputEmail.setAttribute('required', '');
+	document.getElementsByTagName('main')[0].appendChild(form);
+	form.appendChild(divForm);
+	divForm.appendChild(labelFirstName);
+	divForm.appendChild(inputFirstName);
+	divForm.appendChild(labelLastName);
+	divForm.appendChild(inputLastName);
+	divForm.appendChild(labelAddress);
+	divForm.appendChild(inputAddress);
+	divForm.appendChild(labelCity);
+	divForm.appendChild(inputCity);
+	divForm.appendChild(labelEmail);
+	divForm.appendChild(inputEmail);
 }
