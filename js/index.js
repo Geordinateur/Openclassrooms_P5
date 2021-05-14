@@ -53,7 +53,7 @@ if (content) {
 ////////////////////////////////////////////////////////////////////
 
 	function getContent(content) {
-		fetch("http://localhost:3000/api/" + content)
+		fetch("https://georges-grignard.fr:3000/api/" + content)
 			.then(function (response) {
 				if (response.ok) {
 					return response.json();
@@ -75,7 +75,7 @@ if (content) {
 	}
 
 function getArticle(content, id) {
-	fetch("http://localhost:3000/api/" + content)
+	fetch("https://georges-grignard.fr:3000/api/" + content)
 		.then(function (response) {
 			if (response.ok) {
 				return response.json();
@@ -108,7 +108,7 @@ function getArticle(content, id) {
 }
 
 function getPrice(content, id) {
-	fetch("http://localhost:3000/api/" + content)
+	fetch("https://georges-grignard.fr:3000/api/" + content)
 		.then(function(response) {
 			if(response.ok) {
 				return response.json();
