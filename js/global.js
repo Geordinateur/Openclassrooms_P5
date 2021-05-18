@@ -33,12 +33,10 @@ function btn(title, option) {
 			btn.addEventListener("click", function(e) {
 				localStorage.setItem(localStorage.length, option);
 				alertAddToBasket();
-				e.preventDefault();
 			});
 			break;
 		case 'Supprimer mon panier':
-			// supprime le panier et redirige vers la page du panier
-			btn.setAttribute("class", "btn btn-danger m-1")
+			btn.setAttribute("class", "btn btn-danger")
 			btn.addEventListener("click", function(e) {
 				localStorage.clear();
 				document.location.href="index.html?action=basket";
@@ -50,18 +48,27 @@ function btn(title, option) {
 			btn.addEventListener("click", function(e) {
 				document.getElementById('alertAddToBasket').remove();
 				document.getElementById('bodyAlert').remove();
-				e.preventDefault();
 			});
 			break;
 		case 'Passer commande!':
-			btn.setAttribute('class', 'btn btn-success m-1')
-			btn.addEventListener('click', function(e) {
-				document.location.href="index.html?action=purchase";
-				e.preventDefault();
-			});
+			btn.setAttribute('class', 'btn btn-success mt-3 disabled')
+			btn.setAttribute('id', 'btn-purchase')
 			break;
 		default:
 			console.log('Unknown account type!');
 	}
 	return btn;
+}
+
+
+function isValid(value) {
+    return /^[A-zÀ-ú]{3,}$/.test(value);
+}
+
+function isValidAddress(value) {
+    return /^[0-9]{1,}\s[A-zÀ-ú]{3,}\s[A-zÀ-ú]/.test(value);
+}
+
+function isValidEmail(value) {
+	return /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(value);
 }
