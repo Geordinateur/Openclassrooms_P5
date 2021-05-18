@@ -156,6 +156,7 @@ function formToPurchase() {
 
 
 
+	/*
 	function send(event) {
 		if (successFirstName && successLastName && successAddress && successCity && successEmail) {
 			let contact = {
@@ -203,9 +204,9 @@ function formToPurchase() {
 			event.preventDefault();
 		}
 	}
+	*/
 
 
-	/*
 					const send = (event) => {
 						let contact = {
 							firstName: document.getElementById('idFirstName').value,
@@ -233,7 +234,6 @@ function formToPurchase() {
 							}
 						});
 					}
-					*/
 
 
 	form.addEventListener("input", function (event) {
