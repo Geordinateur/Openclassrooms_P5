@@ -218,19 +218,25 @@ function formToPurchase() {
 						let products = myBasket();
 						event.preventDefault();
 						console.log('avoir: ', contact, products);
-						const promise = fetch("http://localhost:3000/api/teddies/order", {
+						fetch("http://localhost:3000/api/teddies/order", {
 							method: "POST",
 							headers: {
 								'Accept': 'application/json', 
 								'Content-Type': 'application/json'
 							},
 							body: JSON.stringify({contact, products})
-						});
-						promise.then(async(response) => {
-							try{
-								const contenu = await response.json();
-								contenu = localStorage.setItem("contenu", JSON.stringify(contenu));
-							} catch(e) {
+						})
+						.then(async(response) => {
+							console.log(response);
+							if(response.ok){ 
+								try{
+									const contenu = await response.json();
+//									contenu = localStorage.setItem("contenu", JSON.stringify(contenu));
+									console.log('contenu: ', contenu);
+									console.log('reponse: ', response);
+								} catch(e) {
+									console.log('erreur');
+								}
 							}
 						});
 					}
