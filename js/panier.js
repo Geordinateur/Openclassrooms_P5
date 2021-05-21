@@ -1,4 +1,5 @@
 let total = 0;
+let products = [];
 
 function myBasket() {
 	let myBasket = []
@@ -124,16 +125,10 @@ function formToPurchase() {
 	});
 	//creation de la div du résultat
 	const divResult = document.createElement('div');
-	divResult.setAttribute('class', 'is-invalid invalid-feedback');
+	//	divResult.setAttribute('class', 'is-invalid invalid-feedback');
 	divResult.setAttribute('id', 'idResult');
 	document.getElementsByTagName('main')[0].appendChild(form);
-	//a supprimer
-	inputFirstName.setAttribute('value', 'Georges');
-	inputLastName.setAttribute('value', 'Grignard');
-	inputAddress.textContent = '3 avenue Olympe de Gouges';
-	inputCity.setAttribute('value', 'Nantes');
-	inputEmail.setAttribute('value', 'emuricardo@gmail.com');
-	//
+	//mise en page des elements crees
 	form.appendChild(divForm);
 	divForm.appendChild(labelFirstName);
 	divForm.appendChild(inputFirstName);
@@ -148,16 +143,8 @@ function formToPurchase() {
 	divForm.appendChild(btn("Passer commande!"));
 	divForm.appendChild(divResult);
 	//verification des données avant l'envoi du formulaires.
-	//
-	//
-	//
-
-
-
-
-
-	/*
-	function send(event) {
+	const send = (event) => {
+		event.preventDefault();
 		if (successFirstName && successLastName && successAddress && successCity && successEmail) {
 			let contact = {
 				firstName: document.getElementById('idFirstName').value,
@@ -166,82 +153,37 @@ function formToPurchase() {
 				city: document.getElementById('idCity').value,
 				email: document.getElementById('idEmail').value,
 			};
-			let products = myBasket();
-			event.preventDefault();
 			fetch("http://localhost:3000/api/teddies/order", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json', 
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
 
 				body: JSON.stringify({contact, products})
 			})
 				.then(function(res) {
-					console.log(res);
 					if (res.ok) {
-						console.log('success');
-						console.log(res);
 						return res.json();
 					}
 				})
-//			.then(function(value) {
-//				console.log(value);
-//				console.log(res);
-//				document
-//					.getElementById("idResult")
-//					.innerText = value;
-//			})
+				.then(function(value) {
+					console.log(value);
+					document
+						.getElementById("idResult")
+						.innerText = value.orderId;
+				})
 				.catch(function (err) {
 					// erreur
-					console.log('erreur');
-					console.log(err);
+					console.error('erreur: ', err);
 				});
 		} else {
-			divForm.appendChild(errorDiv);
-			errorDiv.textContent = '';
-			errorDiv.textContent = 'Votre formulaire est incorrect';
+			divForm.appendChild(divResult);
+			divResult.textContent = '';
+			divResult.textContent = 'Votre formulaire est incorrect';
 			event.preventDefault();
 		}
 	}
-	*/
-
-
-					const send = (event) => {
-						let contact = {
-							firstName: document.getElementById('idFirstName').value,
-							lastName: document.getElementById('idLastName').value,
-							address: document.getElementById('idAddress').value,
-							city: document.getElementById('idCity').value,
-							email: document.getElementById('idEmail').value,
-						};
-						let products = myBasket();
-						event.preventDefault();
-						console.log('avoir: ', contact, products);
-						fetch("http://localhost:3000/api/teddies/order", {
-							method: "POST",
-							headers: {
-								'Accept': 'application/json', 
-								'Content-Type': 'application/json'
-							},
-							body: JSON.stringify({contact, products})
-						})
-						.then(async(response) => {
-							console.log(response);
-							if(response.ok){ 
-								try{
-									const contenu = await response.json();
-//									contenu = localStorage.setItem("contenu", JSON.stringify(contenu));
-									console.log('contenu: ', contenu);
-									console.log('reponse: ', response);
-								} catch(e) {
-									console.log('erreur');
-								}
-							}
-						});
-					}
-
-
 	form.addEventListener("input", function (event) {
 		if (successFirstName && successLastName && successAddress && successCity && successEmail) {
 			document.getElementById('btn-purchase').classList.remove('disabled');
@@ -249,27 +191,9 @@ function formToPurchase() {
 			document.getElementById('btn-purchase').classList.add('disabled');
 		}
 	});
-	form.addEventListener("submit", send); /*function (event) {
-		if (successFirstName && successLastName && successAddress && successCity && successEmail) {
-		} else {
-			divForm.appendChild(divResult);
-			errorDiv.textContent = '';
-			errorDiv.textContent = 'Votre formulaire est incorrect';
-			event.preventDefault();
-		}
-	}, false);*/
+	form.addEventListener("submit", send); 
 	return form;
 }
-
-
-
-
-
-
-
-
-
-
 
 document.getElementsByTagName("h2")[0].textContent = "Mon panier";
 if(localStorage.length > 0) {
@@ -283,6 +207,7 @@ if(localStorage.length > 0) {
 			JSON.parse(myBasket()[i])['description']
 		);
 		total += JSON.parse(myBasket()[i])['price'];
+		products.push(JSON.parse(myBasket()[i])['_id']);
 	}
 	getTotal();
 	document.getElementsByTagName("aside")[0].appendChild(formToPurchase());

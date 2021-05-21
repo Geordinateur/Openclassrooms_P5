@@ -4,7 +4,6 @@ let content = url.searchParams.get("content");
 let id = url.searchParams.get("id");
 let action = url.searchParams.get("action");
 let titlePage = '';
-content = 'teddies';
 
 //crée un titre de page avec une majuscule au parametre 'content'
 if(content) {

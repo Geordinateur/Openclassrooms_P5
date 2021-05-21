@@ -6,6 +6,7 @@ function getArticle(content, id) {
 			}
 		})
 		.then(function (value) {
+			//je capture l'option car j'aurai aimer afficher plusieur categorie sur le site.
 			if(value[id].colors) {
 				optionArticle = value[id].colors;
 			} else if(value[id].lenses) {
@@ -25,16 +26,12 @@ function getArticle(content, id) {
 			);
 			selectOption(optionArticle);
 			document.getElementsByTagName("aside")[0].appendChild(btn("Ajouter au panier", JSON.stringify(value[id])));
-
-			console.log('salut');
-			btn.addEventListener("click", function(e) {
-			});
-			console.log('au revoir');
-
-
+		//	btn.addEventListener("click", function(e) {
+		//	});
 		})
 		.catch(function (err) {
 			// erreur
+			console.error('erreur: catégorie ou id incorrect');
 		});
 }
 
@@ -67,7 +64,6 @@ function selectOption(array) {
 	sltOption.setAttribute("id", "option-article");
 	document.getElementsByTagName("aside")[0].appendChild(sltOption);
 	for(let option of array) {
-		console.log(option);
 		let opt = document.createElement("option");
 		opt.textContent = option;
 		document.getElementById("option-article").appendChild(opt);

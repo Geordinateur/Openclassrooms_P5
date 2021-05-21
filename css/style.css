@@ -3,7 +3,7 @@
 }
 
 .img-element { 
-  width: 100px;
+  width: 200px;
 }
 
 .img-description {
@@ -45,6 +45,15 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-asside {
+.listing {
+  border-radius: 10px;
+}
+.listing:hover {
+  box-shadow: 0px 0px 25px -20px #000000;
+}
+
+aside {
 	background-color: lightblue;
+  border-radius: 10px;
+  padding: 30px;
 }
