@@ -26,8 +26,6 @@ function getArticle(content, id) {
 			);
 			selectOption(optionArticle);
 			document.getElementsByTagName("aside")[0].appendChild(btn("Ajouter au panier", JSON.stringify(value[id])));
-		//	btn.addEventListener("click", function(e) {
-		//	});
 		})
 		.catch(function (err) {
 			// erreur
@@ -70,22 +68,21 @@ function selectOption(array) {
 	}
 }
 
-function alertAddToBasket() {
-	//	localStorage.setItem(localStorage.length, content + "-" + id);
+function alertSuccess(whatBtn, text, option) {
 	const mainPage = document.getElementsByTagName("main")[0];
 	const divAlertAdd  = document.createElement("div");
-	divAlertAdd.setAttribute("class", "alertAddToBasket p-3 alert-success");
-	divAlertAdd.setAttribute("id", "alertAddToBasket");
+	divAlertAdd.setAttribute("class", "alertSuccess p-3 alert-success");
+	divAlertAdd.setAttribute("id", "alertSuccess");
 	const bodyAlert = document.createElement('div');
 	bodyAlert.setAttribute('class', 'bodyFade');
 	bodyAlert.setAttribute('id', 'bodyAlert');
 	const pAlertAdd = document.createElement('p');
 	pAlertAdd
-		.textContent = "Article correctement ajouter au panier!"
+		.textContent = text;
 	mainPage.appendChild(bodyAlert);
 	mainPage.appendChild(divAlertAdd);
 	divAlertAdd.appendChild(pAlertAdd);
-	divAlertAdd.appendChild(btn("Fermer la fenetre"));
+	divAlertAdd.appendChild(btn(whatBtn));
 }
 
 document.getElementsByTagName("h2")[0].innerHTML += '<a href="index.html?content=' + content + '">' + titlePage + "</a>";

@@ -25,7 +25,7 @@ function getContent(content) {
 
 function createElementListing(name, id, img, price) {
 	const divElement = document.createElement("a");
-	divElement.setAttribute("class", "clearfix d-block p-3 m-3 listing w-100 bg-light");
+	divElement.setAttribute("class", "listing col-md-4 col-12 p-3");
 	divElement.setAttribute(
 		"href",
 		"produit.html?content=" + content + "&id=" + id
@@ -36,7 +36,7 @@ function createElementListing(name, id, img, price) {
 	priceElement.textContent = centsToEuros(price);
 	const imgElement = document.createElement("img");
 	imgElement.setAttribute("src", img);
-	imgElement.setAttribute("class", "img-element m-auto img-thumbnail");
+	imgElement.setAttribute("class", "img-thumbnail img-description mb-3");
 	//
 	const div = document.getElementById("listing").appendChild(divElement);
 	div.appendChild(imgElement);

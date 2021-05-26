@@ -125,7 +125,8 @@ function formToPurchase() {
 	});
 	//creation de la div du résultat
 	const divResult = document.createElement('div');
-	//	divResult.setAttribute('class', 'is-invalid invalid-feedback');
+	// petit bug bootstrap... ???
+	// divResult.setAttribute('class', 'is-invalid invalid-feedback');
 	divResult.setAttribute('id', 'idResult');
 	document.getElementsByTagName('main')[0].appendChild(form);
 	//mise en page des elements crees
@@ -146,6 +147,7 @@ function formToPurchase() {
 	const send = (event) => {
 		event.preventDefault();
 		if (successFirstName && successLastName && successAddress && successCity && successEmail) {
+			// en cas de réussite, on crée l'objet "contact"
 			let contact = {
 				firstName: document.getElementById('idFirstName').value,
 				lastName: document.getElementById('idLastName').value,
@@ -168,10 +170,8 @@ function formToPurchase() {
 					}
 				})
 				.then(function(value) {
-					console.log(value);
-					document
-						.getElementById("idResult")
-						.innerText = value.orderId;
+					// une redirection vers la page de confirmation
+					document.location.href="confirmation.html?order=" + value.orderId;
 				})
 				.catch(function (err) {
 					// erreur
@@ -195,8 +195,8 @@ function formToPurchase() {
 	return form;
 }
 
-document.getElementsByTagName("h2")[0].textContent = "Mon panier";
-if(localStorage.length > 0) {
+
+const seeMyBasket = () => {
 	for (let i in myBasket()) {
 		// parcours le contenu du localStorage a l'aide de la function myBasket()
 		createElementArticle(
@@ -212,6 +212,14 @@ if(localStorage.length > 0) {
 	getTotal();
 	document.getElementsByTagName("aside")[0].appendChild(formToPurchase());
 	document.getElementsByTagName("aside")[0].appendChild(btn("Supprimer mon panier"));
+}
+
+document.getElementsByTagName("h2")[0].textContent = "Mon panier";
+
+if(localStorage.length > 0 && !url.searchParams.get("order")) {
+	seeMyBasket();
 } else {
+	const aside = document.getElementsByTagName("aside")[0];
+	aside.parentNode.removeChild(aside);
 	document.getElementById('listing').textContent = "Pour l'instant votre panier est vide";
 }

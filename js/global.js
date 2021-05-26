@@ -1,6 +1,7 @@
 let str = window.location.href;
 let url = new URL(str);
-let content = url.searchParams.get("content");
+//let content = url.searchParams.get("content");
+let content = 'teddies';
 let id = url.searchParams.get("id");
 let action = url.searchParams.get("action");
 let titlePage = '';
@@ -27,12 +28,13 @@ function btn(title, option) {
 	const btn = document.createElement('button');
 	btn.setAttribute("class", "btn btn-primary m-1")
 	btn.setAttribute("type", "submit")
+	btn.setAttribute("id", "myBtn")
 	btn.textContent = title;
 	switch (title) {
 		case 'Ajouter au panier':
 			btn.addEventListener("click", function(e) {
 				localStorage.setItem(localStorage.length, option);
-				alertAddToBasket();
+				alertSuccess('Fermer la fenetre', 'Article correctement ajouter au panier');
 			});
 			break;
 		case 'Supprimer mon panier':
@@ -46,10 +48,18 @@ function btn(title, option) {
 		case 'Fermer la fenetre':
 			btn.setAttribute("class", "btn btn-success m-1")
 			btn.addEventListener("click", function(e) {
-				document.getElementById('alertAddToBasket').remove();
+				document.getElementById('alertSuccess').remove();
 				document.getElementById('bodyAlert').remove();
 			});
 			break;
+		case 'Retour à l\'accueil':
+			btn.setAttribute("class", "btn btn-success m-1")
+			btn.addEventListener("click", function(e) {
+				document.location.href="index.html";
+				e.preventDefault();
+			});
+			break;
+;
 		case 'Passer commande!':
 			btn.setAttribute('class', 'btn btn-success mt-3 disabled')
 			btn.setAttribute('id', 'btn-purchase')
