@@ -195,7 +195,6 @@ function formToPurchase() {
 	return form;
 }
 
-
 const seeMyBasket = () => {
 	for (let i in myBasket()) {
 		// parcours le contenu du localStorage a l'aide de la function myBasket()
