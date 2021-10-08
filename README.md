@@ -1,4 +1,4 @@
-# Openclassrooms_P5
+# Construisez un site e-commerce en JavaScript
 ## Compétences évaluées
 - Créer un plan de test pour une application
 - Interagir avec un web service avec JavaScript
